@@ -39,6 +39,12 @@
     <ClInclude Include="constant.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="acteasyif.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlcManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PocoDBandPLC.cpp">
@@ -51,6 +57,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="PocoDB.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="acteasyif.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlcManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

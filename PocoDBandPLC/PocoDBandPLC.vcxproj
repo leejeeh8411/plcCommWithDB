@@ -193,7 +193,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="acteasyif.h" />
     <ClInclude Include="constant.h" />
+    <ClInclude Include="PlcManager.h" />
     <ClInclude Include="PocoDB.h" />
     <ClInclude Include="PocoDBandPLC.h" />
     <ClInclude Include="PocoDBandPLCDlg.h" />
@@ -202,6 +204,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="acteasyif.cpp" />
+    <ClCompile Include="PlcManager.cpp" />
     <ClCompile Include="PocoDB.cpp" />
     <ClCompile Include="PocoDBandPLC.cpp" />
     <ClCompile Include="PocoDBandPLCDlg.cpp" />

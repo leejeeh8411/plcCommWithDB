@@ -73,5 +73,28 @@ struct st_plc_address
 
 };
 
+struct st_plc_read_sch
+{
+	int idx;
+	int addressid;
+	int idxstt;
+	int size;
+	char cDataType[10];
+	char keyname[20];
+	char cDataTypeDB[10];
+
+	st_plc_read_sch() {
+		idx = 0;
+		addressid = 0;
+		idxstt = 0;
+		size = 0;
+		memset(cDataType, NULL, sizeof(char) * 10);
+		memset(keyname, NULL, sizeof(char) * 20);
+		memset(cDataTypeDB, NULL, sizeof(char) * 10);
+	}
+
+};
+
+
 
 

@@ -165,13 +165,22 @@ bool CPocoDBandPLCDlg::ConnectDB()
 
 void CPocoDBandPLCDlg::SelectDB()
 {
-	std::vector<string> vt_name;
+	std::vector<st_plc_read_sch> vt_plcReadSch;
 
-	m_db.SelectSch(&vt_name);
+	m_db.ReadPLCSch(&vt_plcReadSch);
 
-	std::vector<st_plc_address> vt_plcAddress;
-
-	m_db.ReadPLCAddress(&vt_plcAddress);
+	
 
 	int a = 10;
+}
+
+void CPocoDBandPLCDlg::ReadPlc()
+{
+	//db에 있는 plc 어드레스 정보를 읽는다
+	std::vector<st_plc_address> vt_plcAddress;
+	m_db.ReadPLCAddress(&vt_plcAddress);
+
+	//ReadPlcData();
+
+	//
 }

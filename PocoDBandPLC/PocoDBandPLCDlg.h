@@ -19,6 +19,8 @@ public:
 	bool CPocoDBandPLCDlg::ConnectDB();
 	void CPocoDBandPLCDlg::SelectDB();
 
+	void CPocoDBandPLCDlg::ReadPlc();
+
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_POCODBANDPLC_DIALOG };

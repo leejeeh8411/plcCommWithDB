@@ -105,24 +105,37 @@ bool CPocoDB::ReadPLCAddress(std::vector<st_plc_address>* vt_data)
 	return true;
 }
 
-bool CPocoDB::SelectSch(std::vector<string>* vt_data)
+bool CPocoDB::ReadPLCSch(std::vector<st_plc_read_sch>* vt_data)
 {
-	string strName;
+	st_plc_read_sch plcReadSch;
+
+	std::string strDataType;
+	std::string strKeyName;
+	std::string strDataTypeDB;
 	
 	// prepare query
 	Session session(sessionPool->get());
 	Statement stmt(session);
-	stmt << "SELECT name";
-	stmt << " FROM sample";
+	stmt << "SELECT idx, addressid, idxstt, size, datatype, keyname, datatypedb";
+	stmt << " FROM PLCReadSCH";
 
-	stmt, into(strName);
+	stmt, into(plcReadSch.idx);
+	stmt, into(plcReadSch.addressid);
+	stmt, into(plcReadSch.idxstt);
+	stmt, into(plcReadSch.size);
+	stmt, into(strDataType);
+	stmt, into(strKeyName);
+	stmt, into(strDataTypeDB);
 
 	stmt, range(0, 1); //  iterate over result set one row at a time
 
 	while (!stmt.done()){
 		try{
 			stmt.execute();
-			vt_data->emplace_back(strName);
+			strncpy(plcReadSch.cDataType, strDataType.c_str(), 10);
+			strncpy(plcReadSch.keyname, strKeyName.c_str(), 20);
+			strncpy(plcReadSch.cDataTypeDB, strDataTypeDB.c_str(), 10);
+			vt_data->emplace_back(plcReadSch);
 		}
 		catch (Poco::Exception& e){
 			return false;
