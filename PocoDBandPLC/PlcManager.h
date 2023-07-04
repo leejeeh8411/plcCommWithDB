@@ -1,6 +1,6 @@
 #pragma once
 
-#include "acteasyif.h"
+#include "actutltype1.h"
 
 class CPlcManager
 {
@@ -8,8 +8,9 @@ public:
 	CPlcManager();
 	~CPlcManager();
 
-	CActEasyIF			m_ActEasyIF;
+	CActutltype1*	m_plcIF;
 
+	void SetOCXCtrl(CActutltype1* pPlcCtrl);
 	BOOL PlcOpen(int nLogicalStationNumber);
 	void PlcClose();
 	BOOL m_bPlcConnection;

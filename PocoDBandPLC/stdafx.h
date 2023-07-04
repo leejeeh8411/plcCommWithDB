@@ -96,5 +96,3 @@ struct st_plc_read_sch
 };
 
 
-
-
