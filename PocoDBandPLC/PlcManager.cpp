@@ -175,7 +175,7 @@ void CPlcManager::ReadPLC()
 	}	*/
 }
 
-std::map<string, string> CPlcManager::ParsePlcData()
+std::map<string, string> CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, std::map<string, string> map_data)
 {
 
 }
