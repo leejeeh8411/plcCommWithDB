@@ -34,13 +34,6 @@
 #include <afxcontrolbars.h>     // MFC의 리본 및 컨트롤 막대 지원
 
 
-
-
-
-
-
-
-
 #ifdef _UNICODE
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -55,7 +48,7 @@
 
 struct st_plc_address
 {
-	int idx;
+	int blockID;
 	char cAddress[10];
 	int blockSize;
 	char cDataType[10];
@@ -63,7 +56,7 @@ struct st_plc_address
 	char cComment[50];
 
 	st_plc_address() {
-		idx = 0;
+		blockID = 0;
 		memset(cAddress, NULL, sizeof(char) * 10);
 		blockSize = 0;
 		memset(cDataType, NULL, sizeof(char) * 10);

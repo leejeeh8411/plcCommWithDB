@@ -22,7 +22,8 @@ void CPocoDB::Connect()
 	Poco::Data::ODBC::Connector::registerConnector();
 
 	std::string strConnection = 
-		"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-4NUMLB1;Database=MasterNew;Trusted_Connection=Yes;";
+		//"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-4NUMLB1;Database=MasterNew;Trusted_Connection=Yes;";
+		"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-86U7OKN;Database=MasterNew;Trusted_Connection=Yes;";
 	
 	m_connectionString = strConnection;
 	sessionPool = new Poco::Data::SessionPool("ODBC", strConnection);
@@ -77,10 +78,10 @@ bool CPocoDB::ReadPLCAddress(std::vector<st_plc_address>* vt_data)
 	// prepare query
 	Session session(sessionPool->get());
 	Statement stmt(session);
-	stmt << "SELECT idx, address, blocksize, datatype, synctype, comment";
+	stmt << "SELECT idx, TRIM(address), blocksize, TRIM(datatype), TRIM(synctype), TRIM(comment)";
 	stmt << " FROM PLCaddress";
 
-	stmt, into(plcAddress.idx);
+	stmt, into(plcAddress.blockID);
 	stmt, into(strAddress);
 	stmt, into(plcAddress.blockSize);
 	stmt, into(strDataType);
@@ -92,6 +93,7 @@ bool CPocoDB::ReadPLCAddress(std::vector<st_plc_address>* vt_data)
 	while (!stmt.done()) {
 		try {
 			stmt.execute();
+
 			strncpy(plcAddress.cAddress, strAddress.c_str(), 10);
 			strncpy(plcAddress.cDataType, strDataType.c_str(), 10);
 			strncpy(plcAddress.cSyncType, strSyncType.c_str(), 10);
@@ -105,7 +107,7 @@ bool CPocoDB::ReadPLCAddress(std::vector<st_plc_address>* vt_data)
 	return true;
 }
 
-bool CPocoDB::ReadPLCSch(std::vector<st_plc_read_sch>* vt_data)
+bool CPocoDB::ReadPLCSch(std::vector<st_plc_read_sch>* vt_data, int nBlockID)
 {
 	st_plc_read_sch plcReadSch;
 
@@ -116,8 +118,9 @@ bool CPocoDB::ReadPLCSch(std::vector<st_plc_read_sch>* vt_data)
 	// prepare query
 	Session session(sessionPool->get());
 	Statement stmt(session);
-	stmt << "SELECT idx, addressid, idxstt, size, datatype, keyname, datatypedb";
+	stmt << "SELECT idx, addressid, idxstt, size, TRIM(datatype), TRIM(keyname), TRIM(datatypedb)";
 	stmt << " FROM PLCReadSCH";
+	stmt << " WHERE addressid =? ", use(nBlockID) ;
 
 	stmt, into(plcReadSch.idx);
 	stmt, into(plcReadSch.addressid);

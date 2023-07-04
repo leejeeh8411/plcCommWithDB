@@ -40,7 +40,7 @@ public:
 
 	// Select¹®
 	bool ReadPLCAddress(std::vector<st_plc_address>* vt_data);
-	bool ReadPLCSch(std::vector<st_plc_read_sch>* vt_data);
+	bool ReadPLCSch(std::vector<st_plc_read_sch>* vt_data, int nBlockID);
 
 };
 

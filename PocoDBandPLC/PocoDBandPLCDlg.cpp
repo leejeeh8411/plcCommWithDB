@@ -101,7 +101,6 @@ BOOL CPocoDBandPLCDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	ConnectDB();
 
 	//ocx 컨트롤을 plcManager클래스로 이관한다
 	m_plcManager.SetOCXCtrl(&m_plcCtrl2);
@@ -229,34 +228,4 @@ HCURSOR CPocoDBandPLCDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-bool CPocoDBandPLCDlg::ConnectDB()
-{
-	bool bRet = false;
 
-	m_db.Connect();
-	//SelectDB();
-
-	return bRet;
-}
-
-void CPocoDBandPLCDlg::SelectDB()
-{
-	std::vector<st_plc_read_sch> vt_plcReadSch;
-
-	m_db.ReadPLCSch(&vt_plcReadSch);
-
-	
-
-	int a = 10;
-}
-
-void CPocoDBandPLCDlg::ReadPlc()
-{
-	//db에 있는 plc 어드레스 정보를 읽는다
-	std::vector<st_plc_address> vt_plcAddress;
-	m_db.ReadPLCAddress(&vt_plcAddress);
-
-	//ReadPlcData();
-
-	//
-}
