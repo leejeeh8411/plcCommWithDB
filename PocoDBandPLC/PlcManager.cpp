@@ -33,16 +33,38 @@ BOOL CPlcManager::PlcOpen(int nLogicalStationNumber)
 	}
 
 	//DB 커넥션
-	m_db.Connect();
+	//m_db.Connect();
 
-	ReadPLC();
-	WritePLC();
+	//ReadPLC();
+	//WritePLC();
+	int nBlockSize = 20;
+	short* pPlcData = new short[nBlockSize];
+	memset(pPlcData, 0, sizeof(short) * nBlockSize);
 
-	/*short sValue = 0;
-	ReadBlock_short("M0", 1, &sValue);*/
+	int nSttIdx = 0;
+	int nIdxBit = 0;
+	int nSize = 10;
+	CString strType = "int";
+	CString strValue = "80000";
 
-	//long lValue = 0;
-	//ReadBlock_long("M0", 2, &lValue);
+	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType, strValue);
+
+	memset(pPlcData, 0, sizeof(short) * nBlockSize);
+
+	CString strType2 = "bit";
+	CString strValue2 = "True";
+	nIdxBit = 4;
+
+	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType2, strValue2);
+
+	memset(pPlcData, 0, sizeof(short) * nBlockSize);
+
+	CString strType3 = "string";
+	CString strValue3 = "ABCDE";
+
+	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType3, strValue3);
+
+	WriteBlock_short("D1000", 10, pPlcData);
 
 	return bConnection;
 }
@@ -195,12 +217,43 @@ void CPlcManager::WritePLC()
 			//std::string strValue = GetValue("키값");
 
 			//타입을 보고 맞는 걸로 변환
-
-
+			//DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType, strValue);
 			
 		}
 
 		delete[] pPlcData;
+	}
+}
+
+void  CPlcManager::DecodingPlcData(short* pPlcData, int nIdxStt, int nIdxBit, int nSize, CString strType, CString _strValue)
+{
+	std::string strValue = _strValue;
+	if (strType == "string") {
+		GetShortDataFromString(_strValue, &pPlcData[nIdxStt], 10);
+	}
+	else if (strType == "int") {
+		CString strData;
+
+		if (nSize == 2) {	//2word 처리
+			long lValueSrc = std::stoi(strValue);
+			short* pShort = (short*)&lValueSrc;
+			
+			pPlcData[nIdxStt] = pShort[0] & 0xFFFF;
+			pPlcData[nIdxStt + 1] = pShort[1] & 0xFFFF;
+		}
+		else {
+			pPlcData[nIdxStt] = std::stoi(strValue);
+		}
+	}
+	else if (strType == "bit") {
+		if (strValue == "True") {
+			short sValue = (0x01 << nIdxBit);
+			pPlcData[nIdxStt] = sValue;
+		}
+		else {
+			short sValue = (0x00 << nIdxBit);
+			pPlcData[nIdxStt] = sValue;
+		}
 	}
 }
 
@@ -281,16 +334,7 @@ void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSiz
 	}
 }
 
-//write
-/*int nSizeWrite = 10;
-short* sVal_write = new short[nSizeWrite];
-memset(sVal_write, NULL, sizeof(short) * nSizeWrite);
 
-TRACE("shortSize=%d \n", sizeof(short));
-
-CString strDataWrite = "ABCD";
-
-GetShortDataFromString(strDataWrite, sVal_write, 10);*/
 
 
 //std::string CPlcManager::getTypeOfValue(json value) 

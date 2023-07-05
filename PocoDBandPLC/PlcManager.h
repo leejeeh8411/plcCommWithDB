@@ -39,6 +39,7 @@ public:
 	std::vector<st_plc_read_sch> CPlcManager::GetSchFromDB(int nBlockID);
 	std::vector<st_plc_address> CPlcManager::GetPlcAddressFromDB();
 	std::string CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nIdxBit, int nSize, CString strType);
+	void  CPlcManager::DecodingPlcData(short* pPlcData, int nIdxStt, int nIdxBit, int nSize, CString strType, CString _strValue);
 
 	CString CPlcManager::GetStringDataFromShort(short* pData, int nSize);
 	void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSize);
