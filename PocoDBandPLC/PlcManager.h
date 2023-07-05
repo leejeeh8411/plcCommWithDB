@@ -35,9 +35,10 @@ public:
 	BOOL WriteBlock_long(CString strAddress, int nSize, long* lValue);
 
 	void CPlcManager::ReadPLC();
+	void CPlcManager::WritePLC();
 	std::vector<st_plc_read_sch> CPlcManager::GetSchFromDB(int nBlockID);
 	std::vector<st_plc_address> CPlcManager::GetPlcAddressFromDB();
-	std::string CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, CString strType);
+	std::string CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nIdxBit, int nSize, CString strType);
 
 	CString CPlcManager::GetStringDataFromShort(short* pData, int nSize);
 	void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSize);

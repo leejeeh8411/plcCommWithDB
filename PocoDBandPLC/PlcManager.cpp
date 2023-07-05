@@ -36,6 +36,13 @@ BOOL CPlcManager::PlcOpen(int nLogicalStationNumber)
 	m_db.Connect();
 
 	ReadPLC();
+	WritePLC();
+
+	/*short sValue = 0;
+	ReadBlock_short("M0", 1, &sValue);*/
+
+	//long lValue = 0;
+	//ReadBlock_long("M0", 2, &lValue);
 
 	return bConnection;
 }
@@ -116,6 +123,10 @@ void CPlcManager::ReadPLC()
 	int nSize = vt_address_data.size();
 
 	for (int i = 0; i < nSize; i++) {
+		std::string strSyncType = vt_address_data[i].cSyncType;
+		if (strSyncType != "read") {
+			continue;
+		}
 		int nBlockID = vt_address_data[i].blockID;
 		int nBlockSize = vt_address_data[i].blockSize;
 		CString strAddress = vt_address_data[i].cAddress;
@@ -132,53 +143,70 @@ void CPlcManager::ReadPLC()
 
 		for(int j = 0; j < nSizeSch; j++){
 			int nSttIdx = vt_sch_data[j].idxstt;
+			int nIdxBit = vt_sch_data[j].idxbit;
 			int nSize = vt_sch_data[j].size;
-			CString strKeyName = vt_sch_data[j].keyname;
+			std::string strKeyName = vt_sch_data[j].keyname;
 			CString strType = vt_sch_data[j].cDataTypeDB;
 
-			std::string strVal = ParsePlcData(pPlcData, nSttIdx, nSize, strType);
+			std::string strVal = ParsePlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType);
+
+			map_data.insert({ strKeyName, strVal });
 		}
 	
 		delete[] pPlcData;
 	}
-
-	//파일전체 읽기
-	/*ifstream file("d:\\read.json");
-	std::string strJson;
-	stringstream ss;
-	ss << file.rdbuf();
-	strJson = ss.str();
-
-
-	//json 파싱
-	auto j = json::parse(strJson);
-
-	for (json::iterator it = j.begin(); it != j.end(); ++it) {
-		st_plc_address plc_address;
-
-		std::string strKey = it.key();
-		std::string strType = getTypeOfValue(it.value());
-		auto value = it.value();
-
-		if (strKey == "address") {
-
-		}
-		else if (strKey == "integer") {
-
-		}
-		else if (strKey == "double") {
-
-		}
-		else if (strKey == "string") {
-
-		}
-
-		int a = 10;
-
-	}	*/
+	
+	//정보는 가져왔는데 어떤방식으로 데이터를 만들어서 클라이언트들한테 보낼까?
+	//map_data
 }
 
-std::string  CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, CString strType)
+void CPlcManager::WritePLC()
+{
+	std::vector<st_plc_address> vt_address_data = GetPlcAddressFromDB(); //db에 있는 Plc 어드레스 정보를 읽는다
+
+	int nSize = vt_address_data.size();
+
+	for (int i = 0; i < nSize; i++) {
+		std::string strSyncType = vt_address_data[i].cSyncType;
+		if (strSyncType != "write") {
+			continue;
+		}
+
+		int nBlockID = vt_address_data[i].blockID;
+		int nBlockSize = vt_address_data[i].blockSize;
+		CString strAddress = vt_address_data[i].cAddress;
+
+		//힙 할당
+		short* pPlcData = new short[nBlockSize];
+		memset(pPlcData, 0, sizeof(short) * nBlockSize);
+
+		std::vector<st_plc_read_sch> vt_sch_data = GetSchFromDB(nBlockID); //plc block 데이터 명세 정보 가져옴
+
+		int nSizeSch = vt_sch_data.size();
+
+		for (int j = 0; j < nSizeSch; j++) {
+			int nSttIdx = vt_sch_data[j].idxstt;
+			int nIdxBit = vt_sch_data[j].idxbit;
+			int nSize = vt_sch_data[j].size;
+			std::string strKeyName = vt_sch_data[j].keyname;
+			CString strType = vt_sch_data[j].cDataTypeDB;
+
+			//키에 해당하는 값을 가져온다.
+			//std::string strValue = GetValue("키값");
+
+			//타입을 보고 맞는 걸로 변환
+
+
+			
+		}
+
+		delete[] pPlcData;
+	}
+}
+
+
+
+std::string  CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nIdxBit, int nSize, CString strType)
 {
 	std::string strRet;
 
@@ -188,44 +216,33 @@ std::string  CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, 
 	}
 	else if (strType == "int") {
 		CString strData;
-		strData.Format("%d", pPlcData[nIdxStt]);
+
+		if (nSize == 2) {	//2word 처리
+			long lValue = 0;
+			short* pShort = (short*)&lValue;
+			pShort[0] = pPlcData[nIdxStt] & 0xFFFF;
+			pShort[1] = pPlcData[nIdxStt + 1] & 0xFFFF;
+			strData.Format("%d", lValue);
+		}
+		else {
+			strData.Format("%d", pPlcData[nIdxStt]);
+		}
+		
 		strRet = strData;
+	}
+	else if (strType == "bit") {
+		bool bValue = pPlcData[nIdxStt] & (0x01 << nIdxBit);
+
+		if (bValue == true) {
+			strRet = "TRUE";
+		}
+		else {
+			strRet = "FALSE";
+		}
 	}
 
 	return strRet;
 
-	//test
-	//read
-	/*int nSizeShort = 10;
-	short* sValShort = new short[nSizeShort];
-	memset(sValShort, 0, sizeof(short) * nSizeShort);
-
-	std::string strPlcAddtrss = "D1000";
-	ReadBlock_short(strPlcAddtrss.c_str(), nSizeShort, sValShort);*/
-
-
-	/*int nSizeLong = 1;
-	long* sValLong = new long[nSizeLong];
-	memset(sValLong, 0, sizeof(short) * nSizeLong);
-
-	ReadBlock_long(strPlcAddtrss.c_str(), nSizeLong, sValLong);
-	*/
-
-	//CString strData = GetStringDataFromShort(sValShort, nSizeShort);
-
-	//delete[] sValShort;
-	//delete[] sValLong;
-
-	//write
-	/*int nSizeWrite = 10;
-	short* sVal_write = new short[nSizeWrite];
-	memset(sVal_write, NULL, sizeof(short) * nSizeWrite);
-
-	TRACE("shortSize=%d \n", sizeof(short));
-
-	CString strDataWrite = "ABCD";
-
-	GetShortDataFromString(strDataWrite, sVal_write, 10);*/
 }
 
 
@@ -237,8 +254,8 @@ CString CPlcManager::GetStringDataFromShort(short* pData, int nSize)
 	memset(cData, NULL, sizeof(char) * nSizeWithNull);
 
 	for (int i = 0; i < nSize; i++) {
-		cData[i * 2 + 0] = pData[i] & 0xFF;
-		cData[i * 2 + 1] = pData[i] >> 8;
+		cData[i * 2 + 0] = pData[i] >> 8;
+		cData[i * 2 + 1] = pData[i] & 0xFF; 
 	}
 
 	CString retString;
@@ -264,6 +281,16 @@ void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSiz
 	}
 }
 
+//write
+/*int nSizeWrite = 10;
+short* sVal_write = new short[nSizeWrite];
+memset(sVal_write, NULL, sizeof(short) * nSizeWrite);
+
+TRACE("shortSize=%d \n", sizeof(short));
+
+CString strDataWrite = "ABCD";
+
+GetShortDataFromString(strDataWrite, sVal_write, 10);*/
 
 
 //std::string CPlcManager::getTypeOfValue(json value) 
@@ -278,3 +305,38 @@ void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSiz
 //
 //	return "Unknown";
 //}
+
+//파일전체 읽기
+/*ifstream file("d:\\read.json");
+std::string strJson;
+stringstream ss;
+ss << file.rdbuf();
+strJson = ss.str();
+
+
+//json 파싱
+auto j = json::parse(strJson);
+
+for (json::iterator it = j.begin(); it != j.end(); ++it) {
+st_plc_address plc_address;
+
+std::string strKey = it.key();
+std::string strType = getTypeOfValue(it.value());
+auto value = it.value();
+
+if (strKey == "address") {
+
+}
+else if (strKey == "integer") {
+
+}
+else if (strKey == "double") {
+
+}
+else if (strKey == "string") {
+
+}
+
+int a = 10;
+
+}	*/

@@ -51,7 +51,6 @@ struct st_plc_address
 	int blockID;
 	char cAddress[10];
 	int blockSize;
-	char cDataType[10];
 	char cSyncType[10];
 	char cComment[50];
 
@@ -59,7 +58,6 @@ struct st_plc_address
 		blockID = 0;
 		memset(cAddress, NULL, sizeof(char) * 10);
 		blockSize = 0;
-		memset(cDataType, NULL, sizeof(char) * 10);
 		memset(cSyncType, NULL, sizeof(char) * 10);
 		memset(cComment, NULL, sizeof(char) * 50);
 	}
@@ -71,8 +69,8 @@ struct st_plc_read_sch
 	int idx;
 	int addressid;
 	int idxstt;
+	int idxbit;
 	int size;
-	char cDataType[10];
 	char keyname[20];
 	char cDataTypeDB[10];
 
@@ -80,8 +78,8 @@ struct st_plc_read_sch
 		idx = 0;
 		addressid = 0;
 		idxstt = 0;
+		idxbit = 0;
 		size = 0;
-		memset(cDataType, NULL, sizeof(char) * 10);
 		memset(keyname, NULL, sizeof(char) * 20);
 		memset(cDataTypeDB, NULL, sizeof(char) * 10);
 	}

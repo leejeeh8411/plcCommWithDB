@@ -22,8 +22,10 @@ void CPocoDB::Connect()
 	Poco::Data::ODBC::Connector::registerConnector();
 
 	std::string strConnection = 
+		
+		"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-OFNC8DV;Database=MasterNew;Trusted_Connection=Yes;";
 		//"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-4NUMLB1;Database=MasterNew;Trusted_Connection=Yes;";
-		"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-86U7OKN;Database=MasterNew;Trusted_Connection=Yes;";
+		//"DRIVER={ODBC Driver 17 for SQL Server};Server=DESKTOP-86U7OKN;Database=MasterNew;Trusted_Connection=Yes;";
 	
 	m_connectionString = strConnection;
 	sessionPool = new Poco::Data::SessionPool("ODBC", strConnection);
@@ -71,20 +73,18 @@ bool CPocoDB::ReadPLCAddress(std::vector<st_plc_address>* vt_data)
 	st_plc_address plcAddress;
 
 	std::string strAddress;
-	std::string strDataType;
 	std::string strSyncType;
 	std::string strComment;
 
 	// prepare query
 	Session session(sessionPool->get());
 	Statement stmt(session);
-	stmt << "SELECT idx, TRIM(address), blocksize, TRIM(datatype), TRIM(synctype), TRIM(comment)";
+	stmt << "SELECT idx, TRIM(address), blocksize, TRIM(synctype), TRIM(comment)";
 	stmt << " FROM PLCaddress";
 
 	stmt, into(plcAddress.blockID);
 	stmt, into(strAddress);
 	stmt, into(plcAddress.blockSize);
-	stmt, into(strDataType);
 	stmt, into(strSyncType);
 	stmt, into(strComment);
 
@@ -95,7 +95,6 @@ bool CPocoDB::ReadPLCAddress(std::vector<st_plc_address>* vt_data)
 			stmt.execute();
 
 			strncpy(plcAddress.cAddress, strAddress.c_str(), 10);
-			strncpy(plcAddress.cDataType, strDataType.c_str(), 10);
 			strncpy(plcAddress.cSyncType, strSyncType.c_str(), 10);
 			strncpy(plcAddress.cComment, strComment.c_str(), 50);
 			vt_data->emplace_back(plcAddress);
@@ -111,22 +110,21 @@ bool CPocoDB::ReadPLCSch(std::vector<st_plc_read_sch>* vt_data, int nBlockID)
 {
 	st_plc_read_sch plcReadSch;
 
-	std::string strDataType;
 	std::string strKeyName;
 	std::string strDataTypeDB;
 	
 	// prepare query
 	Session session(sessionPool->get());
 	Statement stmt(session);
-	stmt << "SELECT idx, addressid, idxstt, size, TRIM(datatype), TRIM(keyname), TRIM(datatypedb)";
+	stmt << "SELECT idx, addressid, idxstt, idxbit, size, TRIM(keyname), TRIM(datatypedb)";
 	stmt << " FROM PLCReadSCH";
 	stmt << " WHERE addressid =? ", use(nBlockID) ;
 
 	stmt, into(plcReadSch.idx);
 	stmt, into(plcReadSch.addressid);
 	stmt, into(plcReadSch.idxstt);
+	stmt, into(plcReadSch.idxbit);
 	stmt, into(plcReadSch.size);
-	stmt, into(strDataType);
 	stmt, into(strKeyName);
 	stmt, into(strDataTypeDB);
 
@@ -135,7 +133,6 @@ bool CPocoDB::ReadPLCSch(std::vector<st_plc_read_sch>* vt_data, int nBlockID)
 	while (!stmt.done()){
 		try{
 			stmt.execute();
-			strncpy(plcReadSch.cDataType, strDataType.c_str(), 10);
 			strncpy(plcReadSch.keyname, strKeyName.c_str(), 20);
 			strncpy(plcReadSch.cDataTypeDB, strDataTypeDB.c_str(), 10);
 			vt_data->emplace_back(plcReadSch);
