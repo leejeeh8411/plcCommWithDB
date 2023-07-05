@@ -7,11 +7,11 @@
 //#include <sstream>
 #include <map>
 #include "PocoDB.h"
-#include "nlohmann\json.hpp"
+//#include "nlohmann\json.hpp"
 
-const auto JSON_INDENT = 2;
+//const auto JSON_INDENT = 2;
 
-using json = nlohmann::json;
+//using json = nlohmann::json;
 
 class CPlcManager
 {
@@ -37,8 +37,11 @@ public:
 	void CPlcManager::ReadPLC();
 	std::vector<st_plc_read_sch> CPlcManager::GetSchFromDB(int nBlockID);
 	std::vector<st_plc_address> CPlcManager::GetPlcAddressFromDB();
-	std::map<string, string> CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, std::map<string, string> map_data);
+	std::string CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, CString strType);
 
-	std::string CPlcManager::getTypeOfValue(json value);
+	CString CPlcManager::GetStringDataFromShort(short* pData, int nSize);
+	void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSize);
+
+	//std::string CPlcManager::getTypeOfValue(json value);
 };
 

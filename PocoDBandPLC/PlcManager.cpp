@@ -133,7 +133,10 @@ void CPlcManager::ReadPLC()
 		for(int j = 0; j < nSizeSch; j++){
 			int nSttIdx = vt_sch_data[j].idxstt;
 			int nSize = vt_sch_data[j].size;
-			ParsePlcData(pPlcData, nSttIdx, nSize, &map_data);	//파싱한뒤, 해당 keyname으로 value와 같이 리턴한다
+			CString strKeyName = vt_sch_data[j].keyname;
+			CString strType = vt_sch_data[j].cDataTypeDB;
+
+			std::string strVal = ParsePlcData(pPlcData, nSttIdx, nSize, strType);
 		}
 	
 		delete[] pPlcData;
@@ -175,20 +178,103 @@ void CPlcManager::ReadPLC()
 	}	*/
 }
 
-std::map<string, string> CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, std::map<string, string> map_data)
+std::string  CPlcManager::ParsePlcData(short* pPlcData, int nIdxStt, int nSize, CString strType)
 {
+	std::string strRet;
 
+	if (strType == "string") {
+		CString strData = GetStringDataFromShort(&pPlcData[nIdxStt], nSize);
+		strRet = strData;
+	}
+	else if (strType == "int") {
+		CString strData;
+		strData.Format("%d", pPlcData[nIdxStt]);
+		strRet = strData;
+	}
+
+	return strRet;
+
+	//test
+	//read
+	/*int nSizeShort = 10;
+	short* sValShort = new short[nSizeShort];
+	memset(sValShort, 0, sizeof(short) * nSizeShort);
+
+	std::string strPlcAddtrss = "D1000";
+	ReadBlock_short(strPlcAddtrss.c_str(), nSizeShort, sValShort);*/
+
+
+	/*int nSizeLong = 1;
+	long* sValLong = new long[nSizeLong];
+	memset(sValLong, 0, sizeof(short) * nSizeLong);
+
+	ReadBlock_long(strPlcAddtrss.c_str(), nSizeLong, sValLong);
+	*/
+
+	//CString strData = GetStringDataFromShort(sValShort, nSizeShort);
+
+	//delete[] sValShort;
+	//delete[] sValLong;
+
+	//write
+	/*int nSizeWrite = 10;
+	short* sVal_write = new short[nSizeWrite];
+	memset(sVal_write, NULL, sizeof(short) * nSizeWrite);
+
+	TRACE("shortSize=%d \n", sizeof(short));
+
+	CString strDataWrite = "ABCD";
+
+	GetShortDataFromString(strDataWrite, sVal_write, 10);*/
 }
 
-std::string CPlcManager::getTypeOfValue(json value) 
-{
-	if (value.is_array()) return "array";
-	if (value.is_boolean()) return "boolean";
-	if (value.is_null()) return "null";
-	if (value.is_number_integer()) return "integer";
-	if (value.is_number_float()) return "double";
-	if (value.is_string()) return "string";
-	if (value.is_object()) return "object";
 
-	return "Unknown";
+
+CString CPlcManager::GetStringDataFromShort(short* pData, int nSize)
+{
+	int nSizeWithNull = (nSize * 2) + 1;
+	char* cData = new char[nSizeWithNull];
+	memset(cData, NULL, sizeof(char) * nSizeWithNull);
+
+	for (int i = 0; i < nSize; i++) {
+		cData[i * 2 + 0] = pData[i] & 0xFF;
+		cData[i * 2 + 1] = pData[i] >> 8;
+	}
+
+	CString retString;
+	retString.Format("%s", cData);
+
+	delete[] cData;
+
+	return retString;
 }
+
+void CPlcManager::GetShortDataFromString(CString strData, short* pData, int nSize)
+{
+	int nStrLength = strData.GetLength();
+
+	char* ptrChar = (char*)pData;	//첫번째 주소
+
+	for (int i = 0; i < nStrLength; i++) {
+		if (i >= nSize) {
+			break;
+		}
+		char cData = strData.GetAt(i);
+		ptrChar[i] = cData;
+	}
+}
+
+
+
+//std::string CPlcManager::getTypeOfValue(json value) 
+//{
+//	if (value.is_array()) return "array";
+//	if (value.is_boolean()) return "boolean";
+//	if (value.is_null()) return "null";
+//	if (value.is_number_integer()) return "integer";
+//	if (value.is_number_float()) return "double";
+//	if (value.is_string()) return "string";
+//	if (value.is_object()) return "object";
+//
+//	return "Unknown";
+//}

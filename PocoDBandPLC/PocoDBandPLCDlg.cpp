@@ -107,75 +107,11 @@ BOOL CPocoDBandPLCDlg::OnInitDialog()
 	int nPlcLogicalNum = 1;
 	m_plcManager.PlcOpen(nPlcLogicalNum);
 
-	//read
-	int nSizeShort = 10;
-	short* sValShort = new short[nSizeShort];
-	memset(sValShort, 0, sizeof(short) * nSizeShort);
-
-	std::string strPlcAddtrss = "D1000";
- 	m_plcManager.ReadBlock_short(strPlcAddtrss.c_str(), nSizeShort, sValShort);
-
-
-	int nSizeLong = 1;
-	long* sValLong = new long[nSizeLong];
-	memset(sValLong, 0, sizeof(short) * nSizeLong);
-
-	m_plcManager.ReadBlock_long(strPlcAddtrss.c_str(), nSizeLong, sValLong);
-
-	CString strData = GetStringDataFromShort(sValShort, nSizeShort);
-
-	delete[] sValShort;
-	delete[] sValLong;
-
-	//write
-	int nSizeWrite = 10;
-	short* sVal_write = new short[nSizeWrite];
-	memset(sVal_write, NULL, sizeof(short) * nSizeWrite);
-
-	TRACE("shortSize=%d \n", sizeof(short));
-
-	CString strDataWrite = "ABCD";
-
-	GetShortDataFromString(strDataWrite, sVal_write, 10);
-
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
 
-CString CPocoDBandPLCDlg::GetStringDataFromShort(short* pData, int nSize)
-{
-	int nSizeWithNull = (nSize * 2) + 1;
-	char* cData = new char[nSizeWithNull];
-	memset(cData, NULL, sizeof(char) * nSizeWithNull);
-
-	for (int i = 0; i < nSize; i++) {
-		cData[i * 2 + 0] = pData[i] & 0xFF;
-		cData[i * 2 + 1] = pData[i] >> 8; 
-	}
-
-	CString retString;
-	retString.Format("%s", cData);
-
-	delete[] cData;
-
-	return retString;
-}
-
-void CPocoDBandPLCDlg::GetShortDataFromString(CString strData, short* pData, int nSize)
-{
-	int nStrLength = strData.GetLength();
-
-	char* ptrChar = (char*)pData;	//첫번째 주소
-	
-	for (int i = 0; i < nStrLength; i++) {
-		if (i >= nSize) {
-			break;
-		}
-		char cData = strData.GetAt(i);
-		ptrChar[i] = cData;
-	}
-}
 
 
 

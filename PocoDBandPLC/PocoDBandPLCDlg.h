@@ -20,8 +20,7 @@ public:
 	CPlcManager m_plcManager;
 
 
-	CString CPocoDBandPLCDlg::GetStringDataFromShort(short* pData, int nSize);
-	void CPocoDBandPLCDlg::GetShortDataFromString(CString strData, short* pData, int nSize);
+	
 
 
 
