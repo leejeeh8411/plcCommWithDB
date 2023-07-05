@@ -8,6 +8,7 @@
 #include <vector>
 #include "actutltype1.h"
 #include "PlcManager.h"
+#include "UniQueue.h"
 
 // CPocoDBandPLCDlg 대화 상자
 class CPocoDBandPLCDlg : public CDialogEx
@@ -18,10 +19,7 @@ public:
 
 	
 	CPlcManager m_plcManager;
-
-
 	
-
 
 
 // 대화 상자 데이터입니다.

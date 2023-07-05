@@ -37,42 +37,42 @@ BOOL CPlcManager::PlcOpen(int nLogicalStationNumber)
 
 	//ReadPLC();
 	//WritePLC();
-	int nBlockSize = 20;
-	short* pPlcData = new short[nBlockSize];
-	memset(pPlcData, 0, sizeof(short) * nBlockSize);
-
-	int nSttIdx = 0;
-	int nIdxBit = 0;
-	int nSize = 1;
-	CString strType = "int";
-	CString strValue = "1234";
-	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType, strValue);
-	//WriteBlock_short("D1000", nSize, pPlcData);
+	//int nBlockSize = 20;
+	//short* pPlcData = new short[nBlockSize];
 	//memset(pPlcData, 0, sizeof(short) * nBlockSize);
 
-	CString strType2 = "bit";
-	CString strValue2 = "True";
-	nIdxBit = 4;
-	nSttIdx = 1;
-	nSize = 1;
-	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType2, strValue2);
-	//WriteBlock_short("D1001", nSize, pPlcData);
-	//memset(pPlcData, 0, sizeof(short) * nBlockSize);
+	//int nSttIdx = 0;
+	//int nIdxBit = 0;
+	//int nSize = 1;
+	//CString strType = "int";
+	//CString strValue = "1234";
+	//DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType, strValue);
+	////WriteBlock_short("D1000", nSize, pPlcData);
+	////memset(pPlcData, 0, sizeof(short) * nBlockSize);
 
-	CString strType3 = "int";
-	CString strValue3 = "80000";
-	nSttIdx = 2;
-	nSize = 2;
-	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType3, strValue3);
-	//WriteBlock_short("D1005", nSize, pPlcData);
-	//memset(pPlcData, 0, sizeof(short) * nBlockSize);
+	//CString strType2 = "bit";
+	//CString strValue2 = "True";
+	//nIdxBit = 4;
+	//nSttIdx = 1;
+	//nSize = 1;
+	//DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType2, strValue2);
+	////WriteBlock_short("D1001", nSize, pPlcData);
+	////memset(pPlcData, 0, sizeof(short) * nBlockSize);
 
-	CString strType4 = "string";
-	CString strValue4 = "ABCDE";
-	nSize = 10;
-	nSttIdx = 10;
-	DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType4, strValue4);
-	WriteBlock_short("D1000", nBlockSize, pPlcData);
+	//CString strType3 = "int";
+	//CString strValue3 = "80000";
+	//nSttIdx = 2;
+	//nSize = 2;
+	//DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType3, strValue3);
+	////WriteBlock_short("D1005", nSize, pPlcData);
+	////memset(pPlcData, 0, sizeof(short) * nBlockSize);
+
+	//CString strType4 = "string";
+	//CString strValue4 = "ABCDE";
+	//nSize = 10;
+	//nSttIdx = 10;
+	//DecodingPlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType4, strValue4);
+	//WriteBlock_short("D1000", nBlockSize, pPlcData);
 
 	return bConnection;
 }
