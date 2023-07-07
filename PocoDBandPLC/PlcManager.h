@@ -5,8 +5,9 @@
 
 //#include <fstream>
 //#include <sstream>
-#include <map>
+//#include <map>
 #include "PocoDB.h"
+#include "gPostgreSQL.h";
 //#include "nlohmann\json.hpp"
 
 //const auto JSON_INDENT = 2;
@@ -21,8 +22,8 @@ public:
 
 	//ocx 파일 추가될 때 초기화 시 포인터 넘겨줄것
 	CActutltype1*	m_plcIF;
-
 	CPocoDB m_db;
+	gPostgreSQL m_db_pro;
 
 	void SetOCXCtrl(CActutltype1* pPlcCtrl);
 	BOOL PlcOpen(int nLogicalStationNumber);

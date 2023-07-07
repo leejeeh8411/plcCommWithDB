@@ -94,13 +94,12 @@
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>C:\Lib\Util;C:\Lib\json\include;C:\Lib\poco-master\Data\include;C:\Lib\poco-master\Data\ODBC\include;C:\Lib\poco-master\Foundation\include;$(gLib)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Lib\Util;C:\Lib\json\include;C:\Lib\poco-master\Data\include;C:\Lib\poco-master\Data\ODBC\include;C:\Lib\poco-master\Foundation\include;$(gLib)\include;C:\Program Files\PostgreSQL\15\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\Lib\poco_lib\x86;$(gLib)\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Lib\poco_lib\x86;$(gLib)\$(PlatformTarget);C:\Program Files\PostgreSQL\15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gloggerd.lib;gPostgreSQLd.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

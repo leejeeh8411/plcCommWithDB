@@ -35,6 +35,12 @@ BOOL CPlcManager::PlcOpen(int nLogicalStationNumber)
 	//DB 커넥션
 	//m_db.Connect();
 
+	bool bRet = m_db_pro.connect("127.0.0.1", "postgres");
+
+	DBResult result =m_db_pro.execute("select * from PLCaddress");
+
+	int a = 10;
+
 	//ReadPLC();
 	//WritePLC();
 	//int nBlockSize = 20;
@@ -181,12 +187,17 @@ void CPlcManager::ReadPLC()
 			std::string strVal = ParsePlcData(pPlcData, nSttIdx, nIdxBit, nSize, strType);
 
 			map_data.insert({ strKeyName, strVal });
+
+			//키를 확인하여 원래 
+
 		}
 	
 		delete[] pPlcData;
 	}
 	
 	//정보는 가져왔는데 어떤방식으로 데이터를 만들어서 클라이언트들한테 보낼까?
+	//1. 구조체 만들어서 넣는다
+	//2. 
 	//map_data
 }
 

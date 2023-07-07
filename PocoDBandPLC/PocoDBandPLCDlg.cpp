@@ -108,14 +108,14 @@ BOOL CPocoDBandPLCDlg::OnInitDialog()
 	m_plcManager.PlcOpen(nPlcLogicalNum);
 
 
-	CUniMap<std::string, std::string> m_uniMap;
+	/*CUniMap<std::string, std::string> m_uniMap;
 	m_uniMap.Push("KEY_ID", "ABCD");
 	m_uniMap.Push("METER", "100.0");
 
 	std::string strValue;
 	std::string strKey = "KEY_ID";
 
-	bool bRet = m_uniMap.GetData(&strValue, strKey);
+	bool bRet = m_uniMap.GetData(&strValue, strKey);*/
 
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
